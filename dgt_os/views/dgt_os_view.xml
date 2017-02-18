@@ -41,6 +41,7 @@
 				decoration-it="state=='under_repair'"
 				>
 			  <field name="state" string="Status"/> 
+			  <field name="create_date" string="Data Criação"/>
 			  <field name="name"/>
 			  <field name="cliente_id"/> 
 			  <field name="equipment_id"/>
