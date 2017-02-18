@@ -162,7 +162,7 @@
 					<button name="force_parts_reservation" states="released" string="Forçar Reserva" type="object"/>
 					<button name="action_repair_cancel_draft" states="cancel" string="Orçar" type="object"/>
 					<button name="action_repair_end" states="under_repair" type="object" string="Finalizar Execução" class="oe_highlight"/>
-					<button name="action_repair_invoice_create" states="2binvoiced" type="object" string="Faturar" class="oe_highlight"/>
+					<button name="action_repair_invoice_create" states="2binvoiced" type="object" string="Faturar" groups="sales_team.group_sale_salesman" class="oe_highlight"/>
 					<button name="action_repair_cancel" string="Cancelar OS" type="object" attrs="{'invisible':['|',('invoice_method','!=','none'), ('state', 'not in',('confirmed','2binvoiced','ready','under_repair'))]}"/>
 					<!-- <button name="action_repair_cancel" states="draft" type="object" string="Cancelar OS"/>-->
 					<field name="state" widget="statusbar" statusbar_visible="draft,orcamento,orcado,confirmed,done"/>
@@ -516,8 +516,13 @@
 					<field name="date_execution"/>
 					<field name="state"/>
 					<field name="priority"/>
+					<field name="maintenance_type"/>
                     <filter string="Minhas Ordens de Serviço" domain="[('tecnicos_id','=',uid)]" name="minhas_ordem_servico_filter"/>
                     <separator/>
+					<filter string="Corretivas" domain="[('maintenance_type','=','corrective')]" name="ordem_servico_corretiva_filter"/>
+					<filter string="Preventivas" domain="[('maintenance_type','=','preventive')]" name="ordem_servico_preventiva_filter"/>
+					<filter string="Instalação" domain="[('maintenance_type','=','instalacao')]" name="ordem_servico_instalacao_filter"/>
+					<separator/>
 					<filter string="Não Concluídas" domain="[('state','!=','done'),('state','!=','reprovado')]" name="ordem_servico_nao_concluidas_filter"/>
 					<filter string="À Faturar" domain="[('state','=','2binvoiced')]" name="ordem_servico_a_faturar_filter"/>
 					<filter string="Esperando Peças" domain="[('state','=','released')]" name="ordem_servico_esperando_pecas_filter"/>

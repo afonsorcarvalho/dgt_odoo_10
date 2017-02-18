@@ -620,24 +620,27 @@ class DgtOs(models.Model):
 			for peca in self.pecas:
 				if not peca.aplicada:
 					raise UserError(_("Todas as peças devem estar aplicadas para finalizar a Ordem de Serviço."))
-					
-		if self.relatorios:
-			if self.relatorios.atendimentos:
+		sem_relatorio = True			
+		for relatorio in self.relatorios:
+			sem_relatorio = False
+			sem_atendimento = True
+			for atendimento in relatorio.atendimentos:
+				sem_atendimento = False
 				for dgt_os in self:
 					dgt_os.write({'repaired': True})
 					vals = {
 							'state': 'done',
-							'time_execution':dgt_os.relatorios.time_execution
+							'time_execution':relatorio.time_execution
 					}
 					#vals['moves_id'] = dgt_os.action_repair_done().get(dgt_os.id)
 					dgt_os.action_repair_done()
 					if not dgt_os.invoiced and dgt_os.invoice_method == 'after_repair':
 						vals['state'] = '2binvoiced'
 					dgt_os.write(vals)
-			else:
+			if sem_atendimento:
 				raise UserError(_("Para finalizar O.S. deve-se preencher os horários de atendimento de início e fim do serviço."))
 				return False
-		else:	
+		if sem_relatorio:	
 			raise UserError(_("Para finalizar O.S. deve-se incluir pelo menos um relatório de serviço."))
 			return False
 		return True
