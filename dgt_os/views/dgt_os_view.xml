@@ -499,6 +499,46 @@
         </form>
       </field>
     </record>
+	
+	<!-- Filtros para as Ordem de serviços -->
+	<record id="dgt_os_view_filter" model="ir.ui.view">
+            <field name="name">dgt_os.os.view.filter</field>
+            <field name="model">dgt_os.os</field>
+            <field name="arch" type="xml">
+                <search string="Procurar Ordens de Serviço">
+                    <field name="name" string="Ordem de Serviços" filter_domain="[('name','ilike',self)]"/>
+                   <!-- <field name="partner_id" operator="child_of"/> -->
+                    <field name="tecnicos_id"/>
+                    <!-- <field name="team_id" string="Sales Team"/>-->
+                    <field name="equipment_id"/>
+                    <field name="cliente_id"/>
+					<field name="create_date"/>
+					<field name="date_execution"/>
+					<field name="state"/>
+					<field name="priority"/>
+                    <filter string="Minhas Ordens de Serviço" domain="[('tecnicos_id','=',uid)]" name="minhas_ordem_servico_filter"/>
+                    <separator/>
+					<filter string="Não Concluídas" domain="[('state','!=','done'),('state','!=','reprovado')]" name="ordem_servico_nao_concluidas_filter"/>
+					<filter string="À Faturar" domain="[('state','=','2binvoiced')]" name="ordem_servico_a_faturar_filter"/>
+					<filter string="Esperando Peças" domain="[('state','=','released')]" name="ordem_servico_esperando_pecas_filter"/>
+					<separator/>
+					<filter string="Alta Prioridade" domain="[('priority','=','3')]" name="ordem_servico_prioridade_alta_filter"/>
+					<filter string="Média Prioridade" domain="[('priority','=','2')]" name="ordem_servico_prioridade_media_filter"/>
+					<filter string="Baixa Prioridade" domain="[('priority','=','1')]" name="ordem_servico_prioridade_baixa_filter"/>
+					<separator/>
+                    <filter string="Mensagens não lidas" name="message_needaction" domain="[('message_needaction','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <!-- <filter string="Técnico" domain="[]" context="{'group_by':'tecnicos_id'}"/> -->
+                        <filter name="cliente_id" string="Cliente" domain="[]" context="{'group_by':'cliente_id'}"/>
+						<filter name="equipment_id" string="Equipamento" domain="[]" context="{'group_by':'equipment_id'}"/>
+                        <filter string="Mes" domain="[]" context="{'group_by':'date_execution'}"/>
+						<filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+						<filter string="Prioridade" domain="[]" context="{'group_by':'priority'}"/>
+                    </group>
+               </search>
+            </field>
+    </record>
+	
 	<!-- explicit pivot view definition -->
 		<record model="ir.ui.view" id="ordem_servico_pivot">
             <field name="name">dgt_os.os.pivot</field>

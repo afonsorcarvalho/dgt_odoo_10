@@ -183,7 +183,7 @@ class DgtOs(models.Model):
 		'res.company', 'Empresa',
 		default=lambda self: self.env['res.company']._company_default_get('mrp.repair'))
 	tecnicos_id = fields.Many2many(
-		'hr.employee',string = 'Técnicos',readonly=True, compute='_compute_tecnicos_id',store=True
+		'hr.employee',string = 'Técnicos',readonly=True, compute='_compute_tecnicos_id',store=True,copy=True
 		)
 	invoiced = fields.Boolean('Faturado', copy=False, readonly=True)
 	repaired = fields.Boolean(u'Concluído', copy=False, readonly=True)
