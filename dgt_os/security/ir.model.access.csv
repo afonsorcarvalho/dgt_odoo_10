@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dgt_os_os_user,access.dgt_os.os.user,model_dgt_os_os,base.group_user,1,0,0,0
+access_dgt_os_os_tecnico,access.dgt_os.os.tecnico,model_dgt_os_os,base.group_user,1,1,1,0
+access_dgt_os_os_manager,access.dgt_os.os.manager,model_dgt_os_os,base.group_system,1,1,1,1
+access_dgt_os_os_request_user,access.dgt_os.os.request.user,model_dgt_os_os_request,base.group_user,1,0,0,0
+access_dgt_os_os_request_tecnico,access.dgt_os.os.request.tecnico,model_dgt_os_os_request,base.group_user,1,1,1,0
+access_dgt_os_os_request_manager,access.dgt_os.os.request.manager,model_dgt_os_os_request,group_at_manager,1,1,1,1
+access_dgt_os_os_pecas_line_manager,access.dgt_os.os.pecas.line.manager,model_dgt_os_os_pecas_line,group_at_manager,1,1,1,1
+access_dgt_os_os_servicos_line_manager,access.dgt_os.os.servicos.line.manager,model_dgt_os_os_servicos_line,group_at_manager,1,1,1,1
+access_dgt_os_os_relatorio_servico_manager,access.dgt_os.os.relatorio.servico.manager,model_dgt_os_os_relatorio_servico,group_at_manager,1,1,1,1
+access_dgt_os_os_relatorio_atendimento_line_manager,access.dgt_os.os.relatorio.atendimento.line.manager,model_dgt_os_os_relatorio_atendimento_line,group_at_manager,1,1,1,1
+access_dgt_os_os_motivo_reprova_transient,access.dgt_os.os.motivo.reprova.transient,model_dgt_os_os_motivo_reprova_transient,group_at_manager,1,1,1,1
+access_dgt_os_os_motivo_reprova_transient,access.dgt_os.os.motivo.reprova.transient,model_dgt_os_os_motivo_reprova_transient,group_at_user,1,1,0,0
+access_dgt_os_os_motivo_reprova,access.dgt_os.os.motivo.reprova,model_dgt_os_os_motivo_reprova,group_at_manager,1,1,1,1
+access_dgt_os_os_motivo_reprova,access.dgt_os.os.motivo.reprova,model_dgt_os_os_motivo_reprova,group_at_user,1,1,0,0

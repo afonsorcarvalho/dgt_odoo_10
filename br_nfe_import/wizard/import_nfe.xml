@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_wizard_cancel_nfe">
+        <field name="name">wizard.import.nfe.form</field>
+        <field name="model">wizard.import.nfe</field>
+        <field name="arch" type="xml">
+            <form string="Inutilizar Numeração NFe">
+                <group>
+                    <field name="nfe_xml"/>
+                    <field name="fiscal_position_id" />
+                    <field name="payment_term_id" />
+                    <field name="invoice_id" />
+                    <field name="serie" />
+                </group>
+                <footer>
+                    <button name="action_import_nfe"
+                        string="Importar" type="object"
+                        class="oe_highlight" />
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_import_nfe_wizard" model="ir.actions.act_window">
+        <field name="name">Importar NFe</field>
+        <field name="res_model">wizard.import.nfe</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_nfe_import"
+              name="Importar NFe"
+              parent="br_account.menu_br_account"
+              action="action_import_nfe_wizard"
+              sequence="15" />
+
+</odoo>

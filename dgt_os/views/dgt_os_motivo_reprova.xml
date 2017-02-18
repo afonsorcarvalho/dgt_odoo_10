@@ -1,0 +1,27 @@
+﻿<?xml version="1.0"?>
+<odoo>
+        <record id="dgt_os_os_motivo_reprova_transient_view_form" model="ir.ui.view">
+            <field name="name">dgt_os.os.motivo.reprova.transient.form</field>
+            <field name="model">dgt_os.os.motivo.reprova.transient</field>
+            <field name="arch" type="xml">
+                <form string="Motivo da reprovação">
+                    <group class="oe_title">
+                        <field name="motivo_reprova_id"/>
+                    </group>
+                    <footer>
+                        <button name="action_motivo_reprova_apply" string="Submit" type="object" class="btn btn-sm btn-primary"/>
+                        <button string="Cancelar" class="btn btn-sm btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+ 
+        <record id="dgt_os_os_motivo_reprova_transient_action" model="ir.actions.act_window">
+            <field name="name">Motivo de Reprova</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dgt_os.os.motivo.reprova.transient</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dgt_os_os_motivo_reprova_transient_view_form"/>
+            <field name="target">new</field>
+        </record>
+</odoo>

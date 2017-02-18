@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- QWeb Reports -->
+        <report 
+            id="ordem_servico_report"
+            model="dgt_os.os"
+            string="Ordem de Serviço"
+            report_type="qweb-pdf"
+            name="dgt_os.report_ordem_servico"
+            file="report_ordem_servico"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+        />
+		 <report 
+            id="orcamento_servico_report"
+            model="dgt_os.os"
+            string="Orçamento de Serviço"
+            report_type="qweb-pdf"
+            name="dgt_os.report_orcamento_servico"
+            file="report_orcamento_servico"
+            attachment_use="True"
+            attachment="(object.state in ('open','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+        />
+
+    </data>
+</odoo>
+

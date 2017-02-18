@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_os" model="ir.sequence">
+            <field name="name">Ordem de servico</field>
+            <field name="code">dgt_os.os</field>
+            <field name="prefix">OS</field> 
+            <field name="padding">5</field>
+        </record>
+		 <record id="seq_os_relatorio" model="ir.sequence">
+            <field name="name">Relatório de servico</field>
+            <field name="code">dgt_os.os.relatorio</field>
+			<field name="prefix">RAT/%(range_year)s/</field>
+			<field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+        </record>
+		<record id="seq_os_request" model="ir.sequence">
+            <field name="name">Solicitacao de servico</field>
+            <field name="code">dgt_os.os.request</field>
+			<field name="prefix">SS/%(range_year)s/</field>
+			<field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

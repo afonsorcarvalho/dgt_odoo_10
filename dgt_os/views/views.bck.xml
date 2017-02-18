@@ -1,0 +1,604 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+		<!-- Top menu item -->
+		<menuitem name="Ordem de Servico" id="dgt_os_menu_root"/>
+		
+		<!-- menu categories -->
+		<menuitem name="Servicos" id="dgt_os_menu_servicos" parent="dgt_os_menu_root"/>
+		
+
+
+		<menuitem name="Configuracao" id="dgt_os.menu_2" parent="dgt_os_menu_root"/>
+		
+		<!-- actions -->
+		<menuitem name="O.S." id="dgt_os_menu_1_list" parent="dgt_os_menu_servicos"
+				action="dgt_os.action_window"/>
+		<record model="ir.actions.act_window" id="dgt_os.action_window">
+		  <field name="name">Ordens de Servico</field>
+		  <field name="res_model">dgt_os.os</field>
+		  <field name="view_type">form</field>
+		  <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+		  <field name="help" type="html">
+			  <p class="oe_view_nocontent_create">
+				Clique para criar uma nova Ordem de Servico.
+			  </p>
+		  </field>
+		</record>
+		
+		
+		<!-- menu Solicitação de Serviço -->
+  <!--      <record id="dgt_os_request_tree_view" model="ir.ui.view">
+            <field name="name">dgt_os.os.request.tree</field>
+            <field name="model">dgt_os.os.request</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance Requests">-->
+                    <!-- <field name="message_unread" invisible="1"/> -->
+          <!--          <field name="name"/>
+                    <field name="execution_date" string="Date"/>
+                    <field name="equipment_id"/>
+                    <field name="cause"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record> -->
+		
+	<!--	<record id="dgt_os_request_form_view" model="ir.ui.view">
+            <field name="name">dgt_os.request.form</field>
+            <field name="model">dgt_os.os.request</field>
+            <field name="arch" type="xml">
+                <form string="Solicita" version="1.0">
+                    <header>
+                        <button name="button_send_request" states="draft" string="Envia Solicitação" class="oe_highlight"/>
+                        <button name="button_confirm_request" states="claim" string="Confirma Solicitação" class="oe_highlight" groups="asset.group_mro_user"/>
+                     
+                        <field name="state" widget="statusbar" statusbar_visible="draft,claim,run,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Solicitação de Serviço <field name="name" class="oe_inline" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="equipment_id"/>
+                                <field name="cause"/>
+                                <field name="breakdown"/>
+                            </group>
+                            <group>
+                                <field name="requested_date" attrs="{'invisible':[('breakdown','=',True),('state','=','draft')],'readonly':[('state','!=','draft')]}"/>
+                                <field name="execution_date"/>
+                            </group>
+                        </group>
+                        <group string="Reject Reason" states="reject">
+                            <field name="reject_reason" colspan="4" nolabel="1"/>
+                        </group>
+                        <group string="Description">
+                            <field name="description" colspan="4" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>-->
+        
+ <!--       <record id="dgt_os_request_search" model="ir.ui.view">
+            <field name="name">dgt_os.os.request.search</field>
+            <field name="model">dgt_os.os.request</field>
+            <field name="arch" type="xml">
+                <search string="Procurar Solicitacao">
+                    <field name="state"/>
+                    <field name="name"/>
+                    <field name="equipment_id"/>-->
+                    <!-- <filter icon="terp-mail-message-new" string="Unread Messages" name="message_unread" domain="[('message_unread','=',True)]"/> -->
+<!--                    <separator/>
+                    <filter icon="terp-document-new" name="open" string="Open" domain="['|',('state','in',('draft','claim'))]" help="Undecided maintenance request"/>
+                    <group expand="0" string="Group By">
+                      <filter name="group_state"
+                              string="State"
+                              context="{'group_by': 'state'}"
+                              />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="dgt_os.action_requests" model="ir.actions.act_window">
+            <field name="name">Solicitacao de Servico</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dgt_os.os.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_open': 1}</field>
+        </record>
+		 
+		<menuitem name="Solicitacao de Servico"
+            action="dgt_os.action_requests"
+            id="menu_dgt_os_request"
+            parent="dgt_os_menu_servicos"
+            sequence="1"/>
+		-->
+		
+		
+		<!-- actions opening views on models -->
+
+		
+			
+		<!-- explicit list view definition -->
+	<!--	<record model="ir.ui.view" id="dgt_os_list">
+		  <field name="name">dgt_os.os.list</field> 
+		  <field name="model">dgt_os.os</field> 
+		  <field name="arch" type="xml">
+			<tree   string="Ordens de Serviço"
+				default_order="date_scheduled desc"
+				decoration-muted="state=='cancel'"
+				decoration-success="state=='done'"
+				decoration-bf="state=='draft'"
+				decoration-warning="state=='draft'"
+				decoration-it="state=='under_repair'"
+				>
+			  <field name="state" string="Status"/> 
+			  <field name="name"/>
+			  <field name="cliente_id"/> 
+			  <field name="equipment_id"/>
+			  <field name="tecnicos_id"/>
+			  <field name="description" string="Desc. OS"/>
+			  <field name="date_scheduled" string="Dt. Programada"/>
+			  <field name="date_execution" string="Dt. Execução"/>
+			</tree>
+		  </field>
+		</record>
+		-->
+		<!-- explicit calendar view definition -->
+<!--		<record model="ir.ui.view" id="ordem_servico_calendar">
+            <field name="name">dgt_os.os.calendar</field>
+            <field name="model">dgt_os.os</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar color="equipment_id" date_start="date_execution" string="Ordens de Serviço">
+                    <field name="name"/>
+                    <field name="amount_total" widget="monetary"/>
+                    <field name="cliente_id"/>
+                </calendar>
+            </field>
+        </record>
+		-->
+		<!-- explicit pivot view definition -->
+<!--		<record model="ir.ui.view" id="ordem_servico_graphic">
+            <field name="name">dgt_os.os.pivot</field>
+            <field name="model">dgt_os.os</field>
+            <field name="arch" type="xml">
+                <pivot string="Ordem de Serviços" display_quantity="True">
+                    <field name="cliente_id" type="row"/>
+					<field name="state" type="col"/>
+                    <field name="amount_total" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+		-->
+		
+		<!-- explicit graphic view definition -->
+<!--		<record model="ir.ui.view" id="ordem_servico_pivot">
+            <field name="name">dgt_os.os.graphic</field>
+            <field name="model">dgt_os.os</field>
+            <field name="arch" type="xml">
+                <graphic string="Ordem de Serviços" display_quantity="True">
+                    <field name="cliente_id" type="row"/>
+					<field name="state" type="col"/>
+                    <field name="amount_total" type="measure"/>
+                </graphic>
+            </field>
+        </record>
+-->
+			
+	<!-- explicit form view definition -->
+<!--	<record model="ir.ui.view" id="dgt_os_form_view">
+      <field name="name">dgt_os.os.form</field> 
+      <field name="model">dgt_os.os</field> 
+      <field name="arch" type="xml">
+        <form string="Ordens de Serviço">
+			<header>
+					<button name="action_repair_confirm" states="draft" type="object" string="Confirma OS" class="oe_highlight"/>
+					<button name="action_repair_start" attrs="{'invisible': ['&amp;', ('state','!=','confirmed'), '!', '&amp;', ('state','=','ready'), ('invoice_method','=','b4repair')]}"
+						type="object" string="Inicia execução" class="oe_highlight"/>
+					<button name="force_done" states="released" string="Forçar Execução" class="oe_highlight" type="object"/>
+					<button name="force_parts_reservation" states="released" string="Forçar Reserva" type="object"/>
+					<button name="action_repair_cancel_draft" states="cancel" string="Orçar" type="object"/>
+					<button name="action_repair_end" states="under_repair" type="object" string="Finalizar OS" class="oe_highlight"/>
+					<button name="action_repair_invoice_create" states="2binvoiced" type="object" string="Faturar" class="oe_highlight"/>
+					<button name="action_repair_cancel" string="Cancelar OS" type="object" attrs="{'invisible':['|',('invoice_method','!=','none'), ('state', 'not in',('confirmed','2binvoiced','ready','under_repair'))]}"/>
+					<button name="action_repair_cancel" states="draft" type="object" string="Cancelar OS"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+			</header>
+			<sheet string="Ordem de Servico"> 
+			   <label for="name"/>
+						<h1>
+							<field name="name"/>
+						</h1>
+				<group>
+					<group>
+						<field name="equipment_id" attrs="{'readonly':[('state','=','done')]}" />
+						
+						-->
+						<!-- <field name="category_id" invisible="1"/>-->
+			<!--			<field name="cliente_id"  attrs="{'readonly':[('state','=','done')]}"  />
+						<field name="partner_invoice_id" attrs="{
+							'readonly':[('state','=','done')],
+							'invisible':[('invoice_method','=', 'none')],
+							'required':[('invoice_method','!=','none')]}" groups="sale.group_delivery_invoice_address"/>
+					</group>
+					<group>
+						<field name="address_id" groups="sale.group_delivery_invoice_address"
+							attrs="{'required':[('invoice_method','!=','none')],'readonly':[('state','=','done')],'invisible':[('invoice_method','=', 'none')]}"/>
+						<field name="location_id" attrs="{'readonly':[('state','=','done')]}" groups="stock.group_stock_multi_locations"/>
+						<field name="location_dest_id" attrs="{'readonly':[('state','=','done')]}" groups="stock.group_stock_multi_locations"/>
+						<field name="invoice_method" attrs="{'readonly':[('state','=','done')]}"/>
+						
+						-->
+						<!--	<field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot"/>-->
+		<!--			</group> 
+				</group>
+				
+				<separator/>
+				<group>
+					 
+					<group>
+                            <field name="tecnicos_id" attrs="{'readonly':[('state','=','done')]}" widget="many2many_tags"/>
+							<field name="maintenance_type" string="Tipo de Manutenção"
+								attrs="{'readonly':[('state','!=', 'draft')]}"/>
+							<field name="invoice_id" context="{'form_view_ref': 'account.invoice_form'}"
+								attrs="{
+									'readonly':[('state','=', 'done')],
+									'required':[('invoice_method','!=','none'),
+												('state','=','done')],
+									'invisible':[('invoice_method','=', 'none')]}"/>
+                            <field
+                                name="pricelist_id" groups="product.group_sale_pricelist" 
+                                attrs="{
+									'readonly':[('state','=', 'done')],
+									'invisible':[('invoice_method','=', 'none')]}"/>
+                    </group>
+					<group>
+                            <field name="date_planned" string="Data de Planejamento"  />
+                            <field name="date_scheduled" string="Data Programada"/>
+                            <field name="date_execution" string="Data de Execução" attrs="{'readonly':[('state','=', 'done')]}"/>
+							<field name="origin" string="Doc Origem"/>
+                    </group>
+				</group>
+				<group col="1">
+					<field name="description" string="Descrição da O.S." attrs="{'readonly':[('state','=', 'done')]}"/>
+				</group>
+				<separator/>
+				<notebook>
+					<page string="Pecas">
+						<group string="Peças" states="draft,released,done,parts_except,cancel">
+						<field name="pecas" attrs="{'readonly':[('state','=', 'done')]}">
+							<form string="Peças" >
+								 <notebook>
+									<page string="Pecas linhas"> 
+									<group >
+										<group>
+											<field name="type" string="Status"/>
+											<field name="product_id"/>
+											<field name="name"/>
+										</group>
+										<group>
+										
+									-->
+											<!--	<label for="product_uom_qty"/>-->
+								<!--			<field name="product_uom_qty" string="Qtd"/> -->
+											<!-- <field name="product_uom" string="Unidade"/> -->
+								<!--			<field name="price_unit" />
+											<field name="price_subtotal" widget="monetary"/>
+										</group>
+										<group>
+								-->		
+												<!--<field name="type"/>-->
+								<!--			<field name="to_invoice"/>
+											<field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','=','sale')]"/>
+											<field name="invoiced"/>
+										</group>
+									</group>
+									 </page>
+								</notebook>
+							</form>
+							<tree string="Pecas" editable="top" >
+                                <field name="type"/>
+                                <field name="product_id"/>
+                                <field name='name'/> 
+                                <field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot"/>
+                                <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                                <field name="location_dest_id" groups="stock.group_stock_multi_locations"/>
+                                <field name="product_uom_qty" string="Quantity"/>
+								
+						-->
+                                <!-- <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>-->
+                         <!--       <field name="price_unit"/>
+                                <field name="tax_id" widget="many2many_tags"/>
+                                <field name="to_invoice"/>
+                                <field name="price_subtotal" widget="monetary"/>
+                            </tree>
+						</field>
+						</group>
+						<group string="Available Parts" states="released,parts_except">
+                                        <field name="pecas_ready_lines" nolabel="1" readonly="1">
+                                            <tree string="Available Parts">
+                                                <field name="product_id" string="Parts"/>
+                                                <field name="product_qty"/>
+						-->
+                                                <!-- <field name="product_uom" groups="product.group_uom"/>--> 
+                          <!--                      <field name="state" invisible="0"/>
+                                            </tree>
+                                        </field>
+                        </group>						
+						<group class="oe_subtotal_footer oe_right">
+                            <field name="amount_untaxed_pecas" sum="Total Peças s/ impostos" widget="monetary"/>
+                            <field name="amount_tax_pecas" widget="monetary"/>
+                            <div class="oe_subtotal_footer_separator oe_inline">
+                                <label for="amount_total_pecas" />
+                                <button name="button_dummy"
+                                    states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                            </div>
+                            <field name="amount_total_pecas" nolabel="1" sum="Total Peças" class="oe_subtotal_footer_separator" widget="monetary"/>
+                        </group>
+						<group string="Parts to Consume" states="ready">
+							<field name="pecas_move_lines" nolabel="1" readonly="1">
+								<tree string="Parts to Consume">
+									<field name="product_id" string="Parts"/>
+									<field name="product_qty" string="Quantity"/>
+					-->
+									<!-- <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>-->
+					<!--				<field name="state" invisible="1"/>
+								</tree>
+							</field>
+						</group>
+						<group string="Consumed Parts" states="ready,done">
+							<field name="pecas_moved_lines" nolabel="1" readonly="1">
+							   <tree string="Consumed Parts">
+								   <field name="product_id" readonly="1" string="Parts"/>
+								   <field name="product_qty" readonly="1"/>
+								   
+					-->
+								   <!-- <field name="product_uom" readonly="1" string="Unit of Measure" groups="product.group_uom"/>-->
+						<!--		   <field name="state" invisible="1"/>
+							   </tree>
+							</field>
+						</group>
+						<div class="oe_clear"/>
+						
+					</page>
+					<page string="Serviços">
+						<field name="servicos" attrs="{'readonly':[('state','=', 'done')]}" >
+							<form string="Serviços">
+								<notebook>
+										<page string="Serviços linhas">
+											<group col="4">
+												<field name="name"/>
+												<field name="product_id"/>
+					-->
+											<!--	<label for="product_uom_qty"/>-->
+						<!--						<field name="product_uom_qty"/>  -->
+												<!-- <field name="product_uom"/>-->
+						<!--						<field name="price_unit"/> -->
+												<!-- <field name="price_subtotal" widget="monetary"/>-->
+												<!--<field name="type"/>-->
+						<!--						<field name="to_invoice"/>
+												<field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','=','sale')]"/>
+												<field name="invoiced"/>
+												
+											</group>
+										</page>
+								</notebook>
+							</form>
+							<tree string="Serviços">
+							
+					-->
+                             <!--   <field name="type"/>-->
+                       <!--          <field name="product_id"/>
+                                <field name='name'/>
+						-->
+                             <!--   <field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot"/>-->
+                              <!-- <field name="location_id" groups="stock.group_stock_multi_locations"/>-->
+                                <!--<field name="location_dest_id" groups="stock.group_stock_multi_locations"/>-->
+                      <!--          <field name="product_uom_qty" string="Quantity"/>  -->
+                               <!-- <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>-->
+                      <!--          <field name="price_unit"/>
+                                <field name="tax_id" widget="many2many_tags"/>
+                                <field name="to_invoice"/>
+								
+								-->
+                              <!--  <field name="price_subtotal" widget="monetary"/> -->
+                      <!--      </tree>
+						</field>
+						<group class="oe_subtotal_footer oe_right">
+                            <field name="amount_untaxed_servicos" sum="Untaxed amount"/>
+                            <field name="amount_tax_servicos"/>
+                            <div class="oe_subtotal_footer_separator oe_inline">
+                                <label for="amount_total_servicos" />
+                                <button name="button_dummy"
+                                    states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                            </div>
+                            <field name="amount_total_servicos" nolabel="1" sum="Total amount" class="oe_subtotal_footer_separator"/>
+                        </group>
+						<div class="oe_clear"/>
+						
+						<div class="oe_clear"/>
+					</page>
+					<page string="Relatórios">
+						<field name="relatorios" mode="kanban" attrs="{'readonly':[('state','=', 'done')]}" >
+							<form string="Relatórios"  >
+								<notebook>
+									<page string="Relatório Linha">
+										    <group col="4">
+												<field name="name" string="Número do Relatório"/>
+												
+												-->
+											<!--<field name="client_id" string="Cliente"/>
+												<field name="os_id" string="Ref. O.S."/> -->
+						<!--						<field name="equipment_id" string="Equipamento"/>
+											</group>
+											<group>
+												<field name="tecnicos_id"  widget="many2many_tags"/>
+												<field name="motivo_chamado" string="Motivo do Chamado"/>
+												<field name="defeitos" string="Defeitos"/>
+												<field name="servico_executados" string="Serviços Executados"/>
+												<field name="pendencias" string="Pendências"/>
+											</group>
+									</page>
+								</notebook>
+								<page string="Atendimento">
+									<field name="atendimentos" mode="tree" >
+										<form string="Atendimentos" >
+											<notebook>
+												<page string="Atendimento linhas">
+													<group col="4">
+													
+													-->
+														<!-- <field name="name"/> -->
+														<!--  <field name="relatorio_id"/> -->
+													<!--	<label for="product_uom_qty"/>-->
+						<!--								<field name="data_ini"/>
+														<field name="data_fim"/>
+														
+													</group>
+												</page>
+											</notebook>
+										</form>
+										<tree string="Atendimentos" editable="top">
+											<field name="data_ini"/>
+											<field name="data_fim"/>
+											<field name="tempo"/>
+										</tree>
+									</field>
+								</page>
+							</form>
+							<kanban class="o_kanban_mobile">
+								<field name="name"/>
+								<field name="cliente_id"/>
+								<field name="tecnicos_id"/>
+								<field name="motivo_chamado"/>
+								<field name="pendencias"/>
+								<templates>
+									<t t-name="kanban-box">
+										<div t-attf-class="oe_kanban_card oe_kanban_global_click">
+											<div class="row oe_module_vignette" style="border:solid 1px">
+												<div class="col-xs-6">
+													<strong><span><t t-esc="record.name.value"/></span></strong>
+												</div>
+												<div class="col-xs-6">
+													<strong><span><t t-esc="record.cliente_id.value"/></span></strong>
+												</div>
+												<div class="col-xs-6 pull-right text-right">
+													<strong><field name="pendencias" /></strong>
+												</div> 
+											</div> 
+										</div>
+									</t>
+								</templates>
+							</kanban>
+						</field>
+					</page>
+					<page string="Tools">
+						<separator string="Description for Tools"/>
+						<field name="tools_description" placeholder="Specify the tools and mechanisms needed for execute this order..."/>
+					</page>
+					<page string="Labor">
+						<separator string="Description for Labor"/>
+						<field name="labor_description" placeholder="Specify the specialists needed for execute this order..."/>
+					</page>
+					<page string="Operations">
+						<separator string="Description for Operations"/>
+						<field name="operations_description" placeholder="Specify the jobs that need execute..."/>
+					</page>
+					<page string="Documentation">
+						<separator string="Description for Documentation"/>
+						<field name="documentation_description" placeholder="Specify the documentation useful when execute this order..."/>
+					</page>
+					<page string="Extra Info" groups="base.group_no_one">
+                        <group>
+                            <group> -->
+                                <!-- <field name="moves_id" widget="many2many_tags"/> -->
+ <!--                           </group>
+                            <group>
+                                <field name="repaired"/>
+                                <field name="invoiced"/>
+                            </group>
+                        </group>
+                    </page>
+					<page string="Notes">
+                        <field name="internal_notes" placeholder="Adicionar notas Internas..."/>
+                        <field name="quotation_notes" placeholder="Adicionar notas de cotação..."/>
+                    </page>
+				</notebook>
+				<notebook>
+				
+						<group class="oe_subtotal_footer">
+											<field name="amount_untaxed" sum="Untaxed amount"/>
+											<field name="amount_tax"/>
+											<div class="oe_subtotal_footer_separator oe_inline">
+												<label for="amount_total" />
+												<button name="button_dummy"
+													states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+											</div> 
+											<field name="amount_total" nolabel="1" sum="Total amount" class="oe_subtotal_footer_separator"/>
+								</group>
+						<div class="oe_clear"/> 
+				
+				</notebook>
+				<group string="Problem Description">
+                            <field name="problem_description" colspan="4" nolabel="1"/>
+                </group>
+			</sheet>
+			<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+            </div>
+        </form>
+      </field>
+    </record>
+	
+	
+	-->
+ <!-- Peças menu -->
+       <!-- <menuitem name="Peças"
+            id="menu_dgt_os_pecas"
+            parent="base.menu_mro_root"
+            groups="asset.group_mro_user"
+            sequence="9"/> -->
+<!--
+        <record id="pecas_search_form_view" model="ir.ui.view">
+            <field name="name">product.product_template_search_view.inherit.dgt_os</field>
+            <field name="model">product.template</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <filter name="services" position="before">
+                    <filter string="Peças" name="Pecas" domain="[('categ_id','=','Peças')]" help="Parts your store in the inventory"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="pecas_action" model="ir.actions.act_window">
+            <field name="name">Pecas</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="pecas_search_form_view"/>
+            <field name="context" eval="{'default_categ_id': ref('mro.product_category_mro'), 'search_default_parts':1}"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new spare part.
+              </p>
+            </field>
+        </record>
+
+        <menuitem name="Pecas"
+            action="pecas_action"
+            id="menu_dgt_os_pecas"
+            parent="dgt_os_menu_servicos"
+            sequence="100"/>
+	-->
+</data>
+</odoo>

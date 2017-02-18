@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dgt_manutencao_dgt_manutencao,dgt_manutencao.dgt_manutencao,model_dgt_manutencao_dgt_manutencao,,1,0,0,0
