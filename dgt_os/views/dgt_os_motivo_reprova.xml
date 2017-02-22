@@ -15,7 +15,7 @@
                 </form>
             </field>
         </record>
- 
+		
         <record id="dgt_os_os_motivo_reprova_transient_action" model="ir.actions.act_window">
             <field name="name">Motivo de Reprova</field>
             <field name="type">ir.actions.act_window</field>

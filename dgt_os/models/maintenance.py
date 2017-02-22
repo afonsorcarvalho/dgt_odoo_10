@@ -88,7 +88,9 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 class DgtMaintenanceEquipmentCategory(models.Model):
 	_inherit = 'maintenance.equipment.category'
-		
+	
+	
+	
 	@api.multi
 	def _compute_maintenance_count(self):
 		maintenance_data = self.env['dgt_os.os'].read_group([('category_id', 'in', self.ids)], ['category_id'], ['category_id'])
@@ -227,7 +229,34 @@ class DgtMaintenanceEquipment(models.Model):
 		return recs.name_get()
 	
 	serial_no = fields.Char('Serial Number', required=True, copy=False)
+	maintenance_ids = fields.Many2many('dgt_os.os.request', 'equipments',copy=True)
+	os_ids = fields.One2many('dgt_os.os', 'equipment_id')
+	os_count = fields.Integer(compute='_compute_os_count', string="Ordens de serviços", store=True)
+	os_open_count = fields.Integer(compute='_compute_os_count', string="Ordens Abertas ", store=True)
+	
+	@api.one
+	@api.depends('os_ids.state')
+	def _compute_os_count(self):
+		self.os_count = len(self.os_ids)
+		self.os_open_count = len(self.os_ids.filtered(lambda x: x.state != 'done'))
+	
+	@api.one
+	@api.depends('maintenance_ids.stage_id.done')
+	def _compute_maintenance_count(self):
+		self.maintenance_count = len(self.maintenance_ids)
+		self.maintenance_open_count = len(self.maintenance_ids.filtered(lambda x: not x.stage_id.done))
 		
+	@api.model
+	def _cron_generate_requests(self):
+		for equipment in self.search([]):
+			if equipment.period and equipment.next_action_date == date.today().strftime(DEFAULT_SERVER_DATE_FORMAT):
+				self.env['dgt_os.os.request'].create({
+					'name': _('Preventive Maintenance - %s' % equipment.next_action_date),
+					'request_date': equipment.next_action_date,
+					'category_id': equipment.category_id.id,
+					'equipment_id': equipment.id,
+					'maintenance_type': 'preventive',
+				})
 		
 # class MaintenanceRequest(models.Model):
 	# _name = 'maintenance.request'

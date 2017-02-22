@@ -523,6 +523,7 @@ class DgtOs(models.Model):
 						dgt_os.write({'invoiced': True, 'invoice_id': invoice_peca.id})
 					#invoices_group[dgt_os.partner_invoice_id.id] = invoice_peca
 					if servicos_to_invoice:
+						 
 						invoice_servico = InvoiceServ.create({
 							'name': dgt_os.name + u'/S',
 							'origin': dgt_os.name,
@@ -531,7 +532,9 @@ class DgtOs(models.Model):
 							'partner_id': dgt_os.partner_invoice_id.id or dgt_os.cliente_id.id,
 							'currency_id': dgt_os.pricelist_id.currency_id.id,
 							'comment': dgt_os.quotation_notes,
-							'fiscal_position_id': dgt_os.cliente_id.property_account_position_id.id
+							'fiscal_position_id': dgt_os.cliente_id.property_account_position_id.id,
+							'fiscal_document_id': self.env['br_account.fiscal.document'].search([('name','ilike','Nota Fiscal Avulsa')])[0].id,
+							'document_serie_id': self.env['br_account.document.serie'].search([('name','ilike','Série 1 - Nota Avulsa')])[0].id,
 						})
 						dgt_os.write({'invoiced': True, 'invoice_servico_id': invoice_servico.id})
 				
@@ -561,8 +564,9 @@ class DgtOs(models.Model):
 						'product_id': pecas.product_id and pecas.product_id.id or False
 					})
 					pecas.write({'invoiced': True, 'invoice_line_id': invoice_line.id})
-				invoice_peca.compute_taxes()
-				res[dgt_os.id] = invoice_peca.id
+				if pecas_to_invoice:	
+					invoice_peca.compute_taxes()
+					res[dgt_os.id] = invoice_peca.id
 				for servicos in servicos_to_invoice:
 					if group:
 						name = dgt_os.name + '-' + servicos.name
@@ -588,8 +592,9 @@ class DgtOs(models.Model):
 						'product_id': servicos.product_id and servicos.product_id.id or False
 					})
 					servicos.write({'invoiced': True, 'invoice_line_id': invoice_line_serv.id})
-				invoice_servico.compute_taxes()
-				res[dgt_os.id] = invoice_servico.id
+				if servicos_to_invoice:
+					invoice_servico.compute_taxes()
+					res[dgt_os.id] = invoice_servico.id	
 		return res
 	
 	@api.multi

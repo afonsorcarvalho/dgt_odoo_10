@@ -177,11 +177,6 @@
 						<field name="equipment_id" attrs="{'readonly':[('state','not in','draft')]}" />
 						<field name="priority" widget="priority"/>
 						<field name="motivo_reprova" string="Motivo de Reprova" attrs="{'invisible':[('state','!=','reprovado')],'readonly':[('state','=','reprovado')]}"/>
-						<!-- <field name="kanban_state" widget="kanban_state_selection"/>-->
-						
-						
-						<!-- <field name="category_id" invisible="1"/>-->
-						
 						<field name="cliente_id"  attrs="{'readonly':[('state','not in','draft')]}"  />
 						<field name="partner_invoice_id" attrs="{
 							'readonly':[('state','=','done')],
@@ -196,9 +191,6 @@
 						<field name="location_id" attrs="{'readonly':[('state','=','done')]}" groups="stock.group_stock_multi_locations"/>
 						<field name="location_dest_id" attrs="{'readonly':[('state','=','done')]}" groups="stock.group_stock_multi_locations"/>
 						<field name="invoice_method" attrs="{'readonly':[('state','not in','draft'),('state','not in','orcamento'),('state','not in','orcada')]}"/>
-						
-						
-						<!--	<field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot"/>-->
 					</group> 
 				</group>
 				
@@ -249,7 +241,6 @@
 				<separator/>
 				<notebook>
 					<page string="Peças">
-					<!--	<group string="Peças" > -->
 						<field name="pecas" nolabel="1" attrs="{'readonly':[('state','=', 'done')]}">
 							<form string="Peças" >
 								 <notebook>
@@ -260,7 +251,6 @@
 												<field name="name"/>
 											</group>
 											<group>
-												<!--	<label for="product_uom_qty"/>-->
 												<field name="qty_available" string="Qtd Disp."/> 
 												<field name="product_uom_qty" string="Qtd"/> 
 												<field name="product_uom" string="Unidade"/> 
@@ -292,15 +282,6 @@
                                 <field name="price_subtotal" widget="monetary"/>
                             </tree>
 						</field>
-					<!--	</group> -->
-					<!--	<group string="Available Parts" states="released,parts_except">
-                                        <field name="pecas_ready_lines" nolabel="1" readonly="1">
-                                            <tree string="Available Parts">
-                                                <field name="product_id" string="Peças"/>
-                                                <field name="product_qty"/>
-                                            </tree>
-                                        </field>
-                        </group> -->						
 						<group class="oe_subtotal_footer oe_right">
                             <field name="amount_untaxed_pecas" sum="Total Peças s/ impostos" widget="monetary"/>
                             <field name="amount_tax_pecas" widget="monetary"/>
@@ -311,31 +292,7 @@
                             </div>
                             <field name="amount_total_pecas" nolabel="1" sum="Total Peças" class="oe_subtotal_footer_separator" widget="monetary"/>
                         </group>
-						<!-- <group string="Peças para aplicar" states="ready">
-							<field name="pecas_move_lines" nolabel="1" readonly="1">
-								<tree string="Peças para aplicar">
-									<field name="product_id" string="Parts"/>
-									<field name="product_qty" string="Quantity"/>-->
-					
-									<!-- <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>-->
-									<!-- <field name="state" invisible="1"/> 
-								</tree>
-							</field>
-						</group>-->
-						<!-- <group string="Peças Aplicadas" states="ready,done">
-							<field name="pecas_moved_lines" nolabel="1" readonly="1">
-							   <tree string="Peças Aplicadas">
-								   <field name="product_id" readonly="1" string="Parts"/>
-								   <field name="product_qty" readonly="1"/> -->
-								   
-					
-								   <!-- <field name="product_uom" readonly="1" string="Unit of Measure" groups="product.group_uom"/>-->
-								   <!-- <field name="state" invisible="1"/> 
-							   </tree>
-							</field>
-						</group>-->
 						<div class="oe_clear"/>
-						
 					</page>
 					<page string="Serviços">
 						<field name="servicos" attrs="{'readonly':[('state','=', 'done')]}" >
@@ -349,7 +306,6 @@
 												<field name="product_uom"/>
 												<field name="price_unit"/> 
 												<field name="price_subtotal" widget="monetary"/>
-												<!--<field name="type"/>-->
 												<field name="to_invoice"/>
 												<field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','=','sale')]"/>
 												<field name="invoiced"/>
@@ -359,9 +315,6 @@
 								</notebook>
 							</form>
 							<tree string="Serviços"  editable="bottom">
-							
-					
-                             <!--   <field name="type"/>-->
 								<field name="sequence" widget="handle"/>
                                 <field name="product_id"/>
                                 <field name='name'/>
@@ -394,9 +347,6 @@
 									<page string="Relatórios Linha">
 										    <group col="4">
 												<field name="name" string="Número do Relatório"/>
-												
-												
-											<!--<field name="client_id" string="Cliente"/>-->
 												<field name="relatorio_num" string="Relatório Nº."/> 
 												<field name="equipment_id" string="Equipamento"/>
 											</group>
@@ -463,9 +413,6 @@
 					</page>
 					<page string="Informações Extras" groups="base.group_no_one">
                         <group>
-                            <group> 
-                                <!-- <field name="moves_id" widget="many2many_tags"/> -->
-							</group>
                             <group>
                                 <field name="repaired"/>
                                 <field name="invoiced"/>
@@ -478,7 +425,6 @@
                     </page>
 				</notebook>
 				<notebook>
-				
 						<group class="oe_subtotal_footer">
 											<field name="amount_untaxed" sum="Untaxed amount"/>
 											<field name="amount_tax"/>
@@ -515,6 +461,7 @@
 					<field name="create_date"/>
 					<field name="date_execution"/>
 					<field name="state"/>
+					<field name="tecnicos_id"/>
 					<field name="priority"/>
 					<field name="maintenance_type"/>
                     <filter string="Minhas Ordens de Serviço" domain="[('tecnicos_id','=',uid)]" name="minhas_ordem_servico_filter"/>

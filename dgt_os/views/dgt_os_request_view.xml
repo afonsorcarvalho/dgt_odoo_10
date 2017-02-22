@@ -21,18 +21,20 @@
                 <filter string="Done" name="done" domain="[('kanban_state', '=', 'done')]"/>
                 <filter string="Top Priorities" name="top_priority" domain="[('priority', '=', '3')]"/>
                 <separator/>
-                <filter string="Unscheduled Maintenance" domain="[('schedule_date', '=', False)]" name="unscheduled"/>
+                <filter string="Manutenção sem programação" domain="[('schedule_date', '=', False)]" name="unscheduled"/>
                 <separator/>
-                <filter string="My Requests" name="my_requests" domain="[('owner_user_id', '=', uid)]"/>
+                <filter string="Minhas Solicitações" name="my_requests" domain="[('owner_user_id', '=', uid)]"/>
                 <separator/>
-                <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]"/>
+                <filter string="Mensagens não lidas" name="message_needaction" domain="[('message_needaction','=',True)]"/>
                 <separator/>
                 <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
-                <group  expand='0' string='Group by...'>
-                    <filter string='Assigned' domain="[]" context="{'group_by': 'technician_user_id'}"/>
-                    <filter string='Category' domain="[]" context="{'group_by' : 'category_id'}"/>
+                <group  expand='0' string='Agrupar por...'>
+                    <!-- <filter string='Assigned' domain="[]" context="{'group_by': 'technician_user_id'}"/>-->
+                    <filter string='Cliente' domain="[]" context="{'group_by' : 'cliente_id'}"/>
+					<filter string='Categoria' domain="[]" context="{'group_by' : 'category_id'}"/>
                     <filter string='Stages' domain="[]" context="{'group_by' : 'stage_id'}"/>
-                    <filter string='Created By' name='created_by' domain="[]" context="{'group_by': 'owner_user_id'}"/>
+                    <filter string='Criado por' name='created_by' domain="[]" context="{'group_by': 'owner_user_id'}"/>
+					
                 </group>
             </search>
         </field>
@@ -64,7 +66,7 @@
                     </div>
                     <group>
                         <group>
-                            <field name="owner_user_id" string="Requested By"/>
+                            <field name="owner_user_id" string="Solicitado por"/>
                             <field name="equipments"  context="{'default_category_id':category_id}" widget="many2many_tags" />
 							<field name="cliente_id"  />
                             <field name="category_id" groups="maintenance.group_equipment_manager"/>
@@ -76,7 +78,7 @@
 						</group>
                         <group>
                             <field name="maintenance_team_id"/>
-                            <field name="technician_user_id" string="Responsible"/>
+                            <field name="technician_user_id" string="Responsável"/>
                             <label for="schedule_date"/>
                             <div class="o_row">
                                 <field name="schedule_date"/>
@@ -86,7 +88,7 @@
                             <field name="priority" widget="priority"/>
                         </group>
                     </group>
-                    <field name='description' placeholder="Internal Note ......."/>
+                    <field name='description' placeholder="Notas internas ......."/>
 					<field name="oss" nolabel="1" />
                 </sheet>
                 <div class="oe_chatter">
@@ -114,8 +116,8 @@
                 <templates>
                     <t t-name="kanban-tooltip">
                        <ul class="oe_kanban_tooltip">
-                          <li><b>Category:</b> <field name="category_id"/></li>
-                          <li><b>Request to:</b> <field name="technician_user_id"/></li>
+                          <li><b>Categoria:</b> <field name="category_id"/></li>
+                          <li><b>Solicitado por:</b> <field name="technician_user_id"/></li>
                        </ul>
                     </t>
                     <t t-name="kanban-box">
@@ -126,8 +128,8 @@
                                     <span class="fa fa-bars fa-lg"/>
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                    <t t-if="widget.editable"><li><a type="edit">Edit...</a></li></t>
-                                    <t t-if="widget.deletable"><li><a type="delete">Delete</a></li></t>
+                                    <t t-if="widget.editable"><li><a type="edit">Editar...</a></li></t>
+                                    <t t-if="widget.deletable"><li><a type="delete">Apagar</a></li></t>
                                     <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
                                 </ul>
                             </div>
@@ -166,10 +168,11 @@
             <tree string="Solicitação de Manutenção" decoration-bf="message_needaction==True">
                 <field name="message_needaction" invisible="1"/>
                 <field name="name"/>
-                <field name="request_date" groups="base.group_no_one"/>
+				<field name="cliente_id"/>
+                <field name="request_date" />
                 <field name="owner_user_id"/>
-                <field name="technician_user_id"/>
-                <field name="category_id" groups="maintenance.group_equipment_manager"/>
+                <field name="technician_user_id" string="Responsável"/>
+                <field name="category_id" />
                 <field name="stage_id"/>
             </tree>
         </field>
@@ -180,7 +183,7 @@
         <field name="model">dgt_os.os.request</field>
         <field name="arch" type="xml">
             <graph string="Solicitação de Manutenção">
-                <field name="technician_user_id"/>
+                <field name="cliente_id"/>
                 <field name="stage_id"/>
             </graph>
         </field>
@@ -191,7 +194,7 @@
         <field name="model">dgt_os.os.request</field>
         <field name="arch" type="xml">
             <pivot string="Solicitação de Manutenção">
-                <field name="technician_user_id"/>
+                <field name="cliente_id"/>
                 <field name="stage_id"/>
             </pivot>
         </field>
@@ -214,7 +217,7 @@
 		  <field name="type">ir.actions.act_window</field>
 		  <field name="res_model">dgt_os.os.request</field>
 		  <field name="view_type">form</field>
-		  <field name="view_mode">tree,kanban,form,pivot,graph</field>
+		  <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
 		  <field name="help" type="html">
 			  <p class="oe_view_nocontent_create">
 				Clique para criar uma nova Solicitação de Serviço.
