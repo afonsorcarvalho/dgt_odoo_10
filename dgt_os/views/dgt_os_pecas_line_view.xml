@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record model="ir.actions.act_window" id="action_window_os_pecas_line">
+			<field name="name">Itens de pecas</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">dgt_os.os.pecas.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+			  <p class="oe_view_nocontent_create">
+				Clique para criar uma nova Ordem de Servico.
+			  </p>
+			</field>
+		</record>
+		<!-- explicit list view definition -->
+		<record model="ir.ui.view" id="dgt_os_pecas_line_list">
+			<field name="name">dgt_os.os.pecas.line.list</field>
+			<field name="model">dgt_os.os.pecas.line</field>
+			<field name="arch" type="xml">
+				<tree string="Linhas de Pecas de O.S.">
+					<field name="aplicada" string="Aplicada"/>
+					<field name="name"/>
+					<field name="create_date"/>
+					
+				</tree>
+			</field>
+		</record>
+		<record id="dgt_os_os_pecas_line_form" model="ir.ui.view">
+            <field name="name">dgt_os.os.pecas.line.form</field>
+            <field name="model">dgt_os.os.pecas.line</field>
+            <field name="arch" type="xml">
+                <form string="pecas">
+                    <group class="oe_title">
+                        <field name="name"/>
+                    </group>
+                   <!--  <footer>
+                        <button name="action_motivo_reprova_aplica" string="Submit" type="object" class="btn btn-sm btn-primary"/>
+                        <button string="Cancel" class="btn btn-sm btn-default" special="cancel"/>
+                    </footer> -->
+                </form>
+            </field>
+        </record>
+		
+	</data>
+</odoo>

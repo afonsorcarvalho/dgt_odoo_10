@@ -11,7 +11,7 @@ class DgtOs(models.Model):
 	_name = 'dgt_os.os'
 	_description = 'Ordem de Servico'
 	_inherit = ['mail.thread','ir.needaction_mixin']
-	_order = 'date_execution'
+	_order = 'create_date'
 	
 	STATE_SELECTION = [
 		('draft', 'Rascunho'),
@@ -183,7 +183,7 @@ class DgtOs(models.Model):
 		'res.company', 'Empresa',
 		default=lambda self: self.env['res.company']._company_default_get('mrp.repair'))
 	tecnicos_id = fields.Many2many(
-		'hr.employee',string = 'Técnicos',readonly=True, compute='_compute_tecnicos_id',store=True,copy=True
+		'hr.employee',string = 'Técnicos',readonly=True,store=True,copy=True
 		)
 	invoiced = fields.Boolean('Faturado', copy=False, readonly=True)
 	repaired = fields.Boolean(u'Concluído', copy=False, readonly=True)
@@ -708,7 +708,7 @@ class DgtOs(models.Model):
 		
 class dgtOsPecasLine(models.Model):
 	_name = 'dgt_os.os.pecas.line'
-	_description = 'Ordem de Serviço Pecas Planejadas Line'
+	_description = u'Ordem de Serviço Peças Planejadas Line'
 	_order = 'os_id, sequence, id'
 	
 	name = fields.Char('Descrição', size=64)

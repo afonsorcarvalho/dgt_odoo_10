@@ -7,7 +7,7 @@
             <t t-call="report.external_layout">
                 <div class="page"><div class="col-xs-3" style="display:block;float:right;position:absolute;top:0px;right:0px">
 						<!-- <img width="100px" height="100px" t-att-src="'/report/barcode/QR/%s' % 'My text in qr code'"/> -->
-						<img width="100px" height="100px" t-att-src="'/report/barcode/QR/%s%s' % ('http://server.diagnostica-ma.com.br:8069/report/pdf/dgt_os.report_orcamento_servico/',o.id)"/>
+						<img width="100px" height="100px" t-att-src="'/report/barcode/QR/%s%s' % ('http://server.diagnostica-ma.com.br:8069/report/pdf/dgt_os.report_ordem_servico/',o.id)"/>
 					</div>
                     
 					<div class="row mt32 mb32">

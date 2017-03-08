@@ -29,6 +29,7 @@
         'security/ir.model.access.csv',
 		'security/at_security.xml',
 		'views/dgt_os_motivo_reprova.xml',
+		'views/dgt_os_pecas_line_view.xml',
 		'views/dgt_os_view.xml',
 		'views/dgt_os_request_view.xml',
 		'views/reports.xml',

@@ -58,7 +58,7 @@ class DgtOsRequest(models.Model):
 	# active = fields.Boolean(default=True, help="Set active to false to hide the maintenance request without deleting it.")
 	archive = fields.Boolean(default=False, help="Set archive to true to hide the maintenance request without deleting it.")
 	maintenance_type = fields.Selection([('corrective', 'Corretiva'), ('preventive', 'Preventiva'),('instalacao','Instalação'),('treinamento','Treinamento')], required=True, string='Maintenance Type', default="corrective")
-	schedule_date = fields.Datetime('Scheduled Date')
+	schedule_date = fields.Datetime('Scheduled Date',required=True)
 	maintenance_team_id = fields.Many2one('maintenance.team', string='Team', required=True, default=_get_default_team_id)
 	duration = fields.Float(help="Duration in minutes and seconds.")
 

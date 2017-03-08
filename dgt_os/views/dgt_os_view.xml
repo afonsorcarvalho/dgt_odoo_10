@@ -608,5 +608,12 @@
             parent="dgt_os_configuracoes"
             sequence="6"
             groups="base.group_no_one"/>
+		
+		<menuitem name="Itens de Pecas O.S."
+			action="action_window_os_pecas_line"
+				id="menu_dgt_os_os_pecas_line"
+				parent="dgt_os_configuracoes"
+				groups="base.group_no_one"
+				sequence="2"/>
 	</data>
 </odoo>
