@@ -198,7 +198,7 @@
 				<group>
 					 
 					<group>
-                            <field name="tecnicos_id"  widget="many2many_tags"/>
+                            <field name="tecnicos_id"  widget="many2many_tags" readonly="True" />
 							<field name="maintenance_type" string="Tipo de Manutenção"
 								attrs="{'readonly':[('state','!=', 'draft')]}"/> 
 							<field name="origin" string="Doc Origem"/>
@@ -346,7 +346,7 @@
 								<notebook>
 									<page string="Relatórios Linha">
 										    <group col="4">
-												<field name="name" string="Número do Relatório"/>
+												<field name="name" string="Relatório"/>
 												<field name="relatorio_num" string="Relatório Nº."/> 
 												<field name="equipment_id" string="Equipamento"/>
 											</group>
@@ -382,7 +382,7 @@
 								</page>
 							</form>
 							<tree string="Relatórios">
-									<field name="name" string="Número do Relatório"/>
+									<field name="name" string="Relatório"/>
 									<field name="relatorio_num" string="Relatório Nº."/> 
 									<field name="equipment_id" string="Equipamento" invisible="True" />
 									<field name="tecnicos_id"  widget="many2many_tags" invisible="True"/>
@@ -471,6 +471,7 @@
 					<filter string="Instalação" domain="[('maintenance_type','=','instalacao')]" name="ordem_servico_instalacao_filter"/>
 					<separator/>
 					<filter string="Não Concluídas" domain="[('state','!=','done'),('state','!=','reprovado')]" name="ordem_servico_nao_concluidas_filter"/>
+					<filter string="Concluídas" domain="[('state','=','done')]" name="ordem_servico_concluidas_filter"/>
 					<filter string="À Faturar" domain="[('state','=','2binvoiced')]" name="ordem_servico_a_faturar_filter"/>
 					<filter string="Esperando Peças" domain="[('state','=','released')]" name="ordem_servico_esperando_pecas_filter"/>
 					<separator/>
@@ -485,6 +486,7 @@
 						<filter name="equipment_id" string="Equipamento" domain="[]" context="{'group_by':'equipment_id'}"/>
                         <filter string="Mes" domain="[]" context="{'group_by':'date_execution'}"/>
 						<filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+						<filter string="Tipo" domain="[]" context="{'group_by':'maintenance_type'}"/>
 						<filter string="Prioridade" domain="[]" context="{'group_by':'priority'}"/>
                     </group>
                </search>
@@ -500,6 +502,7 @@
                     <field name="cliente_id" type="row"/>
 					<field name="state" type="col"/> 
                     <field name="amount_total" type="measure"/>
+					<field name="time_execution" type="measure"/>
                 </pivot>
             </field>
         </record>

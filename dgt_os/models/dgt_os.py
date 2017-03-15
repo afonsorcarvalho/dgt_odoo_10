@@ -11,7 +11,7 @@ class DgtOs(models.Model):
 	_name = 'dgt_os.os'
 	_description = 'Ordem de Servico'
 	_inherit = ['mail.thread','ir.needaction_mixin']
-	_order = 'create_date'
+	_order = 'name'
 	
 	STATE_SELECTION = [
 		('draft', 'Rascunho'),
@@ -101,7 +101,7 @@ class DgtOs(models.Model):
 	priority = fields.Selection([('0','Normal'),('1',"Baixa"),('2',"Alta"),('3','Muito Alta')],'Prioridade',default=0)
 	color = fields.Integer('Color Index')
 	maintenance_type = fields.Selection(MAINTENANCE_TYPE_SELECTION, string='Tipo de Manutenção',required=True, default="corrective")
-	time_execution = fields.Integer("Tempo Execução", compute='_compute_time_execution', help="Tempo de execução em minutos",store=True)
+	time_execution = fields.Float("Tempo Execução", compute='_compute_time_execution', help="Tempo de execução em minutos",store=True)
 	time_estimado = fields.Integer("Tempo Estimado",help="Tempo estimado de execução em minutos",store=True)
 	task_id = fields.Many2one('dgt_os.os.task', 'Task', readonly=True, states={'draft': [('readonly', False)]})
 	date_planned = fields.Datetime('Planned Date', required=True,  readonly=True, default=time.strftime('%Y-%m-%d %H:%M:%S'))
@@ -183,7 +183,7 @@ class DgtOs(models.Model):
 		'res.company', 'Empresa',
 		default=lambda self: self.env['res.company']._company_default_get('mrp.repair'))
 	tecnicos_id = fields.Many2many(
-		'hr.employee',string = 'Técnicos',readonly=True,store=True,copy=True
+		'hr.employee',string = 'Técnicos',compute='_compute_tecnicos_id',store=True
 		)
 	invoiced = fields.Boolean('Faturado', copy=False, readonly=True)
 	repaired = fields.Boolean(u'Concluído', copy=False, readonly=True)
@@ -193,6 +193,7 @@ class DgtOs(models.Model):
 	amount_untaxed_pecas = fields.Float('Total Peças s/ impostos',compute='_amount_untaxed',  store=True)
 	amount_tax_pecas = fields.Float('Impostos Peças', compute='_amount_tax', store=True)
 	amount_total_pecas = fields.Float('Total Peças',compute='_amount_total',  store=True)
+	amount_total_pecas_no_inv = fields.Float('Total Peças Não Faturada',compute='_amount_total',  store=True)
 	amount_untaxed_servicos = fields.Float('Total Serviços s/ impostos',compute='_amount_untaxed',  store=True)
 	amount_tax_servicos = fields.Float('Impostos Serviços', compute='_amount_tax', store=True)
 	amount_total_servicos = fields.Float('Total Serviços',compute='_amount_total',  store=True)
@@ -208,15 +209,15 @@ class DgtOs(models.Model):
 	account_analytic_id = fields.Many2one('account.analytic.account', string="Conta analítica")
 	#category_id = fields.Many2many(related='equipment_id.category_id', string='Categoria do Equipamento', readonly=True)
 	
-	# @api.multi
-	# @api.onchange('relatorios')
-	# def onchange_relatorios(self):
-		# if self.relatorios:
+	@api.multi
+	@api.onchange('relatorios')
+	def onchange_relatorios(self):
+		if self.relatorios:
 			# tempo = 0.0
 			# for rel in self.relatorios:
 				# tempo += rel.time_execution
 			# self.time_execution = tempo
-			#self._compute_tecnicos_id()
+			self._compute_tecnicos_id()
 			
 	
 	
@@ -330,6 +331,8 @@ class DgtOs(models.Model):
 	@api.depends('amount_untaxed', 'amount_tax')
 	def _amount_total(self):
 		self.amount_total_servicos = self.pricelist_id.currency_id.round(self.amount_untaxed_servicos + self.amount_tax_servicos)
+		total_pecas_no_inv = sum(p.price_subtotal_no_invoiced for p in self.pecas)
+		self.amount_total_pecas_no_inv = self.pricelist_id.currency_id.round(total_pecas_no_inv)
 		self.amount_total_pecas = self.pricelist_id.currency_id.round(self.amount_untaxed_pecas + self.amount_tax_pecas)
 		self.amount_total = self.pricelist_id.currency_id.round(self.amount_untaxed + self.amount_tax)
 	_sql_constraints = [('name', 'unique (name)', 'The name of the Repair Order must be unique!'),]
@@ -635,7 +638,8 @@ class DgtOs(models.Model):
 					dgt_os.write({'repaired': True})
 					vals = {
 							'state': 'done',
-							'time_execution':relatorio.time_execution
+							'time_execution':relatorio.time_execution,
+							'date_execution': time.strftime('%Y-%m-%d %H:%M:%S'),
 					}
 					#vals['moves_id'] = dgt_os.action_repair_done().get(dgt_os.id)
 					dgt_os.action_repair_done()
@@ -723,6 +727,9 @@ class dgtOsPecasLine(models.Model):
 	price_subtotal = fields.Float('Subtotal',
 		compute='_compute_price_subtotal',
 		digits=dp.get_precision('Product Price'))
+	price_subtotal_no_invoiced = fields.Float('Subtotal',
+		compute='_compute_price_subtotal',
+		digits=dp.get_precision('Product Price'))
 	tax_id = fields.Many2many(
 		'account.tax', 'dgt_os_pecas_line_tax', 'dgt_os_pecas_line_id', 'tax_id', 'Impostos')
 	#product_qty = fields.Float(
@@ -764,11 +771,13 @@ class dgtOsPecasLine(models.Model):
 	@api.one
 	@api.depends('to_invoice', 'price_unit', 'os_id', 'product_uom_qty', 'product_id')
 	def _compute_price_subtotal(self):
+		taxes = self.env['account.tax'].compute_all(self.price_unit, self.os_id.pricelist_id.currency_id, self.product_uom_qty, self.product_id, self.os_id.cliente_id)
 		if not self.to_invoice:
 			self.price_subtotal = 0.0
+			self.price_subtotal_no_invoiced = taxes['total_excluded']
 		else:
-			taxes = self.env['account.tax'].compute_all(self.price_unit, self.os_id.pricelist_id.currency_id, self.product_uom_qty, self.product_id, self.os_id.cliente_id)
 			self.price_subtotal = taxes['total_excluded']
+			self.price_subtotal_no_invoiced = 0.0
 	
 	@api.one
 	@api.depends('product_uom_qty', 'product_id')
@@ -850,6 +859,9 @@ class ServicosLine(models.Model):
 	price_subtotal = fields.Float('Subtotal',
 		compute='_compute_price_subtotal',
 		digits=0)
+	price_subtotal_no_invoiced = fields.Float('Subtotal Não faturado',
+		compute='_compute_price_subtotal',
+		digits=0)
 	tax_id = fields.Many2many(
 		'account.tax', 'dgt_os_service_line_tax', 'dgt_os_service_line_id', 'tax_id', 'Impostos')
 	product_uom_qty = fields.Float(
@@ -867,12 +879,13 @@ class ServicosLine(models.Model):
 	@api.one
 	@api.depends('to_invoice', 'price_unit', 'os_id', 'product_uom_qty', 'product_id')
 	def _compute_price_subtotal(self):
+		taxes = self.env['account.tax'].compute_all(self.price_unit, self.os_id.pricelist_id.currency_id, self.product_uom_qty, self.product_id, self.os_id.cliente_id)
 		if not self.to_invoice:
 			self.price_subtotal = 0.0
+			self.price_subtotal_no_invoiced = taxes['total_excluded']
 		else:
-			taxes = self.env['account.tax'].compute_all(self.price_unit, self.os_id.pricelist_id.currency_id, self.product_uom_qty, self.product_id, self.os_id.cliente_id)
 			self.price_subtotal = taxes['total_excluded']
-			
+			self.price_subtotal_no_invoiced = 0.0
 			
 	@api.onchange('os_id', 'product_id', 'product_uom_qty')
 	def onchange_product_id(self): 
@@ -943,9 +956,9 @@ class RelatoriosServico(models.Model):
 		required=True, readonly=False)
 	time_execution = fields.Float(String='tempo execução',compute='_compute_time_execution', store=True )
 	
-	#@api.onchange('tecnicos_id')
-	#def onchange_tecnicos_id(self):
-	#	self.os_id.tecnicos_id = self.tecnicos_id
+	@api.onchange('tecnicos_id')
+	def onchange_tecnicos_id(self):
+		self.os_id.tecnicos_id = self.tecnicos_id
 		
 	#@api.multi
 	#@api.onchange('atendimentos')
