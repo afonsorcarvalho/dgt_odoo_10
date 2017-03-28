@@ -228,6 +228,15 @@ class DgtMaintenanceEquipment(models.Model):
 			recs = self.search(['|',('name', operator, name),('serial_no', operator, name)] + args, limit=limit)
 		return recs.name_get()
 	
+	@api.multi
+	def name_get(self):
+		result = []
+		for record in self:
+			if record.name and record.serial_no:
+				result.append((record.id, str(record.id) + '/' + record.name + '/' + record.serial_no))
+			if record.name and not record.serial_no:
+				result.append((record.id, record.name))
+		return result
 	serial_no = fields.Char('Serial Number', required=True, copy=False)
 	maintenance_ids = fields.Many2many('dgt_os.os.request', 'equipments',copy=True)
 	os_ids = fields.One2many('dgt_os.os', 'equipment_id')

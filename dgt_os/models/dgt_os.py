@@ -564,7 +564,9 @@ class DgtOs(models.Model):
 						'uom_id': pecas.product_uom.id,
 						'price_unit': pecas.price_unit,
 						'price_subtotal': pecas.product_uom_qty * pecas.price_unit,
-						'product_id': pecas.product_id and pecas.product_id.id or False
+						'product_id': pecas.product_id and pecas.product_id.id or False,
+						'fiscal_classification_id': pecas.product_id.fiscal_classification_id.id,
+						'account_analytic_id':dgt_os.account_analytic_id.id,
 					})
 					pecas.write({'invoiced': True, 'invoice_line_id': invoice_line.id})
 				if pecas_to_invoice:	
@@ -592,7 +594,8 @@ class DgtOs(models.Model):
 						'uom_id': servicos.product_uom.id,
 						'price_unit': servicos.price_unit,
 						'price_subtotal': servicos.product_uom_qty * servicos.price_unit,
-						'product_id': servicos.product_id and servicos.product_id.id or False
+						'product_id': servicos.product_id and servicos.product_id.id or False,
+						'account_analytic_id':dgt_os.account_analytic_id.id,
 					})
 					servicos.write({'invoiced': True, 'invoice_line_id': invoice_line_serv.id})
 				if servicos_to_invoice:

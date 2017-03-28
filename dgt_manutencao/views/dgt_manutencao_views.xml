@@ -18,7 +18,8 @@
 		<field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
 		<field name="arch" type="xml">
             <xpath expr="//field[@name='category_id']" position="after">
-                <field name="cliente_id" /> 
+                <field name="cliente_id" />
+				<field name="id" readonly="True" />
             </xpath>
         </field>
 </record>

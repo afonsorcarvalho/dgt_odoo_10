@@ -33,7 +33,7 @@
 		  <field name="model">dgt_os.os</field> 
 		  <field name="arch" type="xml">
 			<tree   string="Ordens de Serviço"
-				default_order="date_scheduled desc"
+				default_order="name desc"
 				decoration-muted="state=='cancel'"
 				decoration-success="state=='done'"
 				decoration-bf="state=='draft'"
@@ -57,9 +57,10 @@
 			<field name="name">dgt_os.os.calendar</field>
 			<field name="model">dgt_os.os</field>
 			<field name="arch" type="xml">
-				<calendar date_start="date_scheduled" color="tecnicos_id">
+				<calendar date_start="date_scheduled" color="cliente_id">
 					<field name="name"/>
-					<field name="tecnicos_id"/>
+					<field name="cliente_id"/>
+					<field name="equipment_id"/>
 				</calendar>
 			</field>
 		</record>
