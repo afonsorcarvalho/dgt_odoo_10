@@ -89,7 +89,7 @@ class DgtOs(models.Model):
 	origin = fields.Char('Source Document', size=64, readonly=True, states={'draft': [('readonly', False)]},
 		help="Referencia ao documento que gerou a ordem de servico.")
 	state = fields.Selection(STATE_SELECTION, string='Status',
-		copy=False, default='draft', readonly=True, track_visibility='onchange',
+		copy=False, default='draft',  track_visibility='onchange',
 		help="* The \'Draft\' status is used when a user is encoding a new and unconfirmed repair order.\n"
 			"* The \'Confirmed\' status is used when a user confirms the repair order.\n"
 			"* The \'Ready to Repair\' status is used to start to repairing, user can start repairing only after repair order is confirmed.\n"
@@ -371,7 +371,11 @@ class DgtOs(models.Model):
 			self.partner_invoice_id = addresses['invoice']
 			self.pricelist_id = self.cliente_id.property_product_pricelist.id
 			
+	@api.multi
+	def action_draft(self):
+		return self.action_repair_cancel_draft()
 		
+	
 	@api.multi
 	def action_repair_cancel_draft(self):
 		if self.filtered(lambda dgt_os: dgt_os.state != 'cancel'):
@@ -952,7 +956,7 @@ class RelatoriosServico(models.Model):
 		string = 'Técnicos')
 	motivo_chamado = fields.Text('Descreva o motivo do chamado')
 	defeitos = fields.Text('Descreva tecnicamente o defeito apresentado')
-	servico_executados = fields.Text('Descreva o serviço realizado')
+	servico_executados = fields.Html('Descreva o serviço realizado')
 	pendencias = fields.Text('Descreva pendências')
 	atendimentos = fields.One2many(
 		'dgt_os.os.relatorio.atendimento.line', 'relatorio_id', 'Atendimento',
@@ -1020,6 +1024,16 @@ class RelatoriosAtendimentoLines(models.Model):
 		help='Data de inicio do servico')
 	data_fim = fields.Datetime(string='Data de Fim', required=True,
 		help='Data de fim do servico')
+		
+	@api.constrains('data_fim')
+	def constrains_data_fim(self):
+		data_fim = datetime.strptime(self.data_fim, "%Y-%m-%d %H:%M:%S")
+		data_ini = datetime.strptime(self.data_ini, "%Y-%m-%d %H:%M:%S")
+		if data_fim.date() < data_ini.date():
+			raise UserError(_("Dia do final do relatório menor que o dia do inicio."))
+		elif data_fim.date() == data_ini.date(): 
+			if data_fim.time() < data_ini.time():
+				raise UserError(_("Hora da data de final do relatório menor que a hora da data de inicio."))
 
 class dgtOsTask(models.Model):
 	"""
